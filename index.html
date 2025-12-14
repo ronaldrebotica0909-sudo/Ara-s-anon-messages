@@ -278,7 +278,7 @@
           
           <div class="input-group">
             <label for="username">Choose Your Username</label>
-            <input type="text" id="username" placeholder="Enter a unique username" />
+            <input type="text" id="username" placeholder="Enter a unique username" value="${currentUsername}" />
           </div>
 
           <button onclick="createLink()">Create My Link</button>
@@ -358,12 +358,16 @@
       }
 
       currentUsername = username;
-      const link = `${window.location.href.split('?')[0]}?send=${username}`;
+      const baseUrl = window.location.href.split('?')[0].split('#')[0];
+      const link = `${baseUrl}?send=${username}`;
       
       document.getElementById('link-container').innerHTML = `
         <div class="link-display">
           <strong>🔗 Your Anonymous Message Link:</strong>
           <a href="${link}" target="_blank">${link}</a>
+        </div>
+        <div class="nav-buttons">
+          <button onclick="goToInbox()">View My Inbox</button>
         </div>
       `;
     }
@@ -375,12 +379,17 @@
     }
 
     function goToInbox() {
-      const username = document.getElementById('username')?.value.trim() || currentUsername;
-      if (!username) {
+      if (!currentUsername) {
+        const usernameInput = document.getElementById('username');
+        if (usernameInput) {
+          currentUsername = usernameInput.value.trim();
+        }
+      }
+      
+      if (!currentUsername) {
         alert('Please enter a username first');
         return;
       }
-      currentUsername = username;
       currentPage = 'inbox';
       render();
     }
